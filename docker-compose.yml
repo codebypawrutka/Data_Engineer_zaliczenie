@@ -1,0 +1,62 @@
+# Uruchamiaj z PowerShella w katalogu J:\olist-pipeline:  docker compose up -d --build
+name: olist
+
+services:
+  # ---------------- Hurtownia danych (PostgreSQL) ----------------
+  warehouse:
+    image: postgres:16
+    container_name: olist-warehouse
+    environment:
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh
+      POSTGRES_DB: olist_dwh
+    ports:
+      - "5432:5432"          # z Windowsa: localhost:5432 (DBeaver)
+    volumes:
+      - pgdata:/var/lib/postgresql/data          # dane Postgresa w wolumenie Dockera
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d olist_dwh"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  # ---------------- Airflow (scheduler + UI + worker w jednym) ----------------
+  airflow:
+    build: .
+    image: olist-airflow:latest
+    container_name: olist-airflow
+    command: standalone
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    env_file:
+      - path: .env           # opcjonalnie: KAGGLE_USERNAME / KAGGLE_KEY
+        required: false
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dwh:dwh@warehouse:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"   # lokalnie: UI bez logowania
+      AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "30"
+      # --- konfiguracja potoku ---
+      DATA_DIR: /opt/airflow/data
+      SQL_DIR: /opt/airflow/sql
+      PYTHONPATH: /opt/airflow/src
+      DWH_URL: postgresql://dwh:dwh@warehouse:5432/olist_dwh
+      MAX_QUARANTINE_PCT: "5"
+    ports:
+      - "8080:8080"          # UI Airflow: http://localhost:8080
+    volumes:                 # katalogi z J:\olist-pipeline widoczne w kontenerze
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./sql:/opt/airflow/sql
+      - ./data:/opt/airflow/data
+      - ./tests:/opt/airflow/tests
+      - ./logs:/opt/airflow/logs
+    restart: unless-stopped
+
+volumes:
+  pgdata:

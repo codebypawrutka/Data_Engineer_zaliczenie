@@ -1,0 +1,53 @@
+# CI: przy każdym pushu uruchamia cały potok na danych SYNTETYCZNYCH
+# (tests/make_sample_data.py) z Postgresem jako usługą — dowód, że kod działa.
+name: pipeline-smoke-test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dwh
+          POSTGRES_PASSWORD: dwh
+          POSTGRES_DB: olist_dwh
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U dwh"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATA_DIR: ${{ github.workspace }}/ci-data
+      SQL_DIR: ${{ github.workspace }}/sql
+      PYTHONPATH: ${{ github.workspace }}/src
+      DWH_URL: postgresql://dwh:dwh@localhost:5432/olist_dwh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Instalacja bibliotek
+        run: pip install -r requirements.txt
+      - name: Dane syntetyczne
+        run: python tests/make_sample_data.py "$DATA_DIR/raw"
+      - name: Bronze
+        run: python -m olist.bronze
+      - name: Silver + testy DQ
+        run: python -m olist.silver
+      - name: Model gwiazdy
+        run: python -m olist.load_dwh
+      - name: Zapytania analityczne
+        run: python -m olist.analytics
+      - name: Gold (PySpark)
+        run: python -m olist.gold_spark
+      - name: Kompilacja DAG-a
+        run: python -m py_compile dags/olist_pipeline.py

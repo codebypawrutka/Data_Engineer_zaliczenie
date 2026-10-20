@@ -1,0 +1,20 @@
+# sekrety
+.env
+
+# surowe dane z Kaggle — licencja CC BY-NC-SA, pliki do ~60 MB; pobiera się je wg README
+data/raw/*
+!data/raw/.gitkeep
+data/raw_sample/
+
+# jezioro danych (Parquet) — odtwarzalne z potoku
+data/lake/*
+!data/lake/.gitkeep
+
+# raporty: commitujemy najnowsze (dq_report.md/json, analytics/*.csv), bez kopii z datą
+data/reports/dq_report_*.json
+
+logs/*
+!logs/.gitkeep
+__pycache__/
+*.pyc
+.venv/

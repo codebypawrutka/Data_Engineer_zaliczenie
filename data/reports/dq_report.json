@@ -1,0 +1,131 @@
+{
+  "generated_at": "2026-10-20T20:32:13",
+  "max_quarantine_pct": 5.0,
+  "tables": [
+    {
+      "table": "category_translation",
+      "rows_in": 71,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 71,
+      "rows_quarantined": 0,
+      "quarantine_pct": 0.0,
+      "rule_failures": {
+        "category_pk_unique": 0,
+        "category_english_not_null": 0
+      }
+    },
+    {
+      "table": "customers",
+      "rows_in": 99441,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 99441,
+      "rows_quarantined": 0,
+      "quarantine_pct": 0.0,
+      "rule_failures": {
+        "customer_pk_unique": 0,
+        "customer_unique_id_not_null": 0,
+        "customer_state_valid": 0,
+        "customer_zip_5_digits": 0
+      }
+    },
+    {
+      "table": "sellers",
+      "rows_in": 3095,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 3095,
+      "rows_quarantined": 0,
+      "quarantine_pct": 0.0,
+      "rule_failures": {
+        "seller_pk_unique": 0,
+        "seller_state_valid": 0,
+        "seller_zip_5_digits": 0
+      }
+    },
+    {
+      "table": "products",
+      "rows_in": 32951,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 32951,
+      "rows_quarantined": 0,
+      "quarantine_pct": 0.0,
+      "rule_failures": {
+        "product_pk_unique": 0,
+        "product_dimensions_non_negative": 0
+      }
+    },
+    {
+      "table": "orders",
+      "rows_in": 99441,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 99433,
+      "rows_quarantined": 8,
+      "quarantine_pct": 0.008,
+      "rule_failures": {
+        "order_pk_unique": 0,
+        "order_status_valid": 0,
+        "order_purchase_ts_not_null": 0,
+        "order_fk_customer": 0,
+        "order_delivered_after_purchase": 0,
+        "order_delivered_has_date": 8
+      }
+    },
+    {
+      "table": "order_items",
+      "rows_in": 112650,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 112642,
+      "rows_quarantined": 8,
+      "quarantine_pct": 0.007,
+      "rule_failures": {
+        "item_pk_unique": 0,
+        "item_price_positive": 0,
+        "item_fk_order": 8,
+        "item_fk_product": 0,
+        "item_fk_seller": 0
+      }
+    },
+    {
+      "table": "order_payments",
+      "rows_in": 103886,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 103876,
+      "rows_quarantined": 10,
+      "quarantine_pct": 0.01,
+      "rule_failures": {
+        "payment_pk_unique": 0,
+        "payment_type_valid": 0,
+        "payment_value_non_negative": 0,
+        "payment_installments_positive": 2,
+        "payment_fk_order": 8
+      }
+    },
+    {
+      "table": "order_reviews",
+      "rows_in": 99224,
+      "exact_duplicates_removed": 0,
+      "rows_ok": 99216,
+      "rows_quarantined": 8,
+      "quarantine_pct": 0.008,
+      "rule_failures": {
+        "review_pk_unique": 0,
+        "review_score_1_5": 0,
+        "review_fk_order": 8
+      }
+    },
+    {
+      "table": "geolocation",
+      "rows_in": 1000163,
+      "exact_duplicates_removed": 261831,
+      "rows_ok": 738299,
+      "rows_quarantined": 33,
+      "quarantine_pct": 0.004,
+      "rule_failures": {
+        "geo_zip_5_digits": 0,
+        "geo_lat_in_brazil": 27,
+        "geo_lng_in_brazil": 29,
+        "geo_state_valid": 0
+      },
+      "rows_after_aggregation": 19010
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "table": "customers",
+    "rows": 99441,
+    "cast_failures": {}
+  },
+  {
+    "table": "geolocation",
+    "rows": 1000163,
+    "cast_failures": {}
+  },
+  {
+    "table": "orders",
+    "rows": 99441,
+    "cast_failures": {}
+  },
+  {
+    "table": "order_items",
+    "rows": 112650,
+    "cast_failures": {}
+  },
+  {
+    "table": "order_payments",
+    "rows": 103886,
+    "cast_failures": {}
+  },
+  {
+    "table": "order_reviews",
+    "rows": 99224,
+    "cast_failures": {}
+  },
+  {
+    "table": "products",
+    "rows": 32951,
+    "cast_failures": {}
+  },
+  {
+    "table": "sellers",
+    "rows": 3095,
+    "cast_failures": {}
+  },
+  {
+    "table": "category_translation",
+    "rows": 71,
+    "cast_failures": {}
+  }
+]

@@ -1,0 +1,4 @@
+# Wymuszenie końców linii LF (pliki są czytane w kontenerze Linux)
+* text=auto eol=lf
+*.parquet binary
+*.ps1 text eol=crlf

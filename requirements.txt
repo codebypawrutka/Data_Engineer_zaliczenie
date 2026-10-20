@@ -1,0 +1,6 @@
+# Biblioteki potoku (instalowane do obrazu Airflow, patrz Dockerfile)
+polars>=1.40,<2
+pyarrow>=17
+pyspark>=4.0,<4.3
+psycopg2-binary>=2.9
+kaggle>=1.7
